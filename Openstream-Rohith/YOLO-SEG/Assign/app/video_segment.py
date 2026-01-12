@@ -55,9 +55,9 @@ def segment_video(inp: str, out: str):
     fps = cap.get(cv2.CAP_PROP_FPS) or 25
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    logger.info(f"📹 Video: {w}x{h} @ {fps:.2f}fps, {total_frames} frames")
+    logger.info(f"Video: {w}x{h} @ {fps:.2f}fps, {total_frames} frames")
 
-    # Output writer (same size → no cropping / no stretching)
+    # Output writer 
     writer = cv2.VideoWriter(out, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
 
     if not writer.isOpened():
@@ -70,16 +70,14 @@ def segment_video(inp: str, out: str):
             break
 
         frame_count += 1
-        if frame_count % 30 == 0:  # Progress every 30 frames
+        if frame_count % 30 == 0:  
             logger.info(f"Processing frame {frame_count}/{total_frames}")
 
-        # Run YOLO segmentation with confidence threshold
         res = model(frame, conf=0.4, verbose=False)[0]
 
         # BLACK background
         black_bg = np.zeros_like(frame)
 
-        # If no person detected → full black frame
         if res.masks is None or len(res.masks.data) == 0:
             writer.write(black_bg)
             continue
@@ -103,5 +101,5 @@ def segment_video(inp: str, out: str):
 
     logger.info(f"Processed {frame_count} frames")
 
-    # Make MP4 browser-streamable
+
     _faststart_mp4(out)
