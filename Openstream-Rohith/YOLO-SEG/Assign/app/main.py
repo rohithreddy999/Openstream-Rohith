@@ -6,7 +6,6 @@ from app.segment import segment_image
 from app.video_segment import segment_video
 import cv2, numpy as np
 from ultralytics import YOLO
-from app.utils import gradient
 
 # Configure logging
 logging.basicConfig(
@@ -15,7 +14,6 @@ logging.basicConfig(
 
 app = FastAPI(
     title="YOLO Segmentation API",
-    description="AI-powered background removal for images and videos",
     version="1.0.0",
 )
 
